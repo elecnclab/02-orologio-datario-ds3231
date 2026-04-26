@@ -14,3 +14,7 @@ Progetto Arduino per orologio con datario basato su:
 
 ## Stato iniziale
 Struttura progetto creata e pronta per versionamento Git/GitHub.
+
+## Documentazione
+- docs/bom/bom.csv Elenco componenti (BOM)
+

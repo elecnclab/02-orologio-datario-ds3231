@@ -1,0 +1,18 @@
+﻿"id","categoria","componente","descrizione","quantita","valore_modello","formato_package","fornitore","sku","link","note"
+"1","elettronica","Arduino Nano","Scheda di controllo principale","1","ATmega328P","PCB","","","",
+"2","elettronica","RTC DS3231","Modulo orologio tempo reale","1","DS3231","Modulo","","","",
+"3","elettronica","Display 7 segmenti TM1637","Display per ora","1","TM1637 6 digit","Modulo","","","",
+"4","elettronica","Display 7 segmenti TM1637","Display per data","1","TM1637 6 digit","Modulo","","","",
+"5","elettronica","Encoder rotativo","Manopola con pulsante integrato","1","incrementale","Panel mount","","","",
+"6","meccanica","Manopola encoder","Manopola STL stampabile 3D","1","orologio-manopola-v01.stl","STL","","https://github.com/elecnclab/02-orologio-datario-ds3231/blob/main/hardware/stl/orologio-manopola-v01.stl","",
+"7","elettronica","Arduino Nano (v3)","","1","","","","","",""
+"8","elettronica","Encoder Rotativo con Pulsante per Arduino Raspberry Pi","","1","","","","","",""
+"9","elettronica","DS3231 RTC","","1","","","","","",""
+"10","hardware","PCB autocostruita","","1","","","","","",""
+"11","elettronica","Condensatore 100nF","","5","","","","","",""
+"12","cablaggio","JST 2,54mm femmina 2 vie","","1","","","","","","Per cavi collegamento PCB-componenti"
+"13","cablaggio","JST 2,54mm femmina 4 vie","","4","","","","","","Per cavi collegamento PCB-componenti"
+"14","cablaggio","JST 2,54mm femmina 5 vie","","3","","","","","","Per cavi collegamento PCB-componenti"
+"15","cablaggio","JST 2,54mm femmina 6 vie","","1","","","","","","Per cavi collegamento PCB-componenti"
+"16","alimentazione","Alimentatore 5V","","1","","","","","",""
+"17","alimentazione","Connettore alimentazione da pannello","","1","","","","","",""
