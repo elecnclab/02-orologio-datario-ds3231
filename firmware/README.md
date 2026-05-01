@@ -46,3 +46,11 @@ Per inizializzare l'RTC con data/ora del PC:
 
 ## Stato
 Firmware importato in una struttura pronta per versionamento Git/GitHub.
+## Ultime modifiche firmware
+- Gestione encoder aggiornata con pressione lunga/corta:
+  - pressione lunga da RUN: entra in regolazione ORARIO
+  - pressioni brevi: HH -> MM -> SS -> salva/esce
+  - seconda pressione lunga in regolazione orario: passa a regolazione DATA
+  - pressioni brevi: GG -> MM -> AA -> salva/esce
+- Corretto doppio incremento encoder: ora un singolo scatto incrementa/decrementa di 1.
+

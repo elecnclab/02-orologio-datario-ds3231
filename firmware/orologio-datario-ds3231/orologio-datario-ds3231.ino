@@ -111,8 +111,11 @@ const unsigned long BLINK_INTERVAL = 400;
 volatile int8_t encDelta = 0;
 int lastEncCLK = HIGH;
 int lastEncSW = HIGH;
+int stableEncSW = HIGH;
 unsigned long lastButtonChange = 0;
-bool buttonPressed = false;
+unsigned long buttonPressStart = 0;
+bool longPressHandled = false;
+const unsigned long LONG_PRESS_MS = 700;
 
 // Update flag
 bool needUpdate = true;
@@ -184,6 +187,42 @@ void setupEncoder() {
   pinMode(ENC_SW, INPUT_PULLUP);
   lastEncCLK = digitalRead(ENC_CLK);
   lastEncSW = digitalRead(ENC_SW);
+  stableEncSW = lastEncSW;
+}
+
+void enterEditMode() {
+  setHH = curHH; setMM = curMM; setSS = curSS;
+  setDD = curDD; setMO = curMO; setYY2 = curYY2;
+}
+
+void saveAndExitEditMode() {
+  normalizeTime();
+  normalizeDate();
+  writeRTC();
+  mode = MODE_RUN;
+}
+
+void handleShortPress() {
+  switch (mode) {
+    case MODE_SET_HH: mode = MODE_SET_MM; break;
+    case MODE_SET_MM: mode = MODE_SET_SS; break;
+    case MODE_SET_SS: saveAndExitEditMode(); break;
+    case MODE_SET_DD: mode = MODE_SET_MO; break;
+    case MODE_SET_MO: mode = MODE_SET_YY; break;
+    case MODE_SET_YY: saveAndExitEditMode(); break;
+    default: break;
+  }
+  needUpdate = true;
+}
+
+void handleLongPress() {
+  if (mode == MODE_RUN) {
+    enterEditMode();
+    mode = MODE_SET_HH;
+  } else if (mode >= MODE_SET_HH && mode <= MODE_SET_SS) {
+    mode = MODE_SET_DD;
+  }
+  needUpdate = true;
 }
 
 void updateEncoder() {
@@ -192,33 +231,35 @@ void updateEncoder() {
   int sw = digitalRead(ENC_SW);
 
   if (clk != lastEncCLK) {
-    encDelta += (dt != clk) ? 1 : -1;
+    // Conta solo su un fronte del CLK per evitare doppio step per scatto.
+    if (clk == LOW) {
+      encDelta += (dt != clk) ? 1 : -1;
+    }
     lastEncCLK = clk;
   }
 
   if (sw != lastEncSW) {
     lastButtonChange = millis();
     lastEncSW = sw;
-  } else if (millis() - lastButtonChange > 50) {
-    if (sw == LOW && !buttonPressed) {
-      buttonPressed = true;
+  }
 
-      if (mode == MODE_RUN) {
-        mode = MODE_SET_HH;
-        setHH = curHH; setMM = curMM; setSS = curSS;
-        setDD = curDD; setMO = curMO; setYY2 = curYY2;
+  if (millis() - lastButtonChange > 50) {
+    if (sw != stableEncSW) {
+      stableEncSW = sw;
+
+      if (stableEncSW == LOW) {
+        buttonPressStart = millis();
+        longPressHandled = false;
       } else {
-        mode = (Mode)(mode + 1);
-        if (mode > MODE_SET_YY) {
-          normalizeTime();
-          normalizeDate();
-          writeRTC();
-          mode = MODE_RUN;
-        }
+        if (!longPressHandled) handleShortPress();
       }
-      needUpdate = true;
     }
-    if (sw == HIGH) buttonPressed = false;
+
+    if (stableEncSW == LOW && !longPressHandled &&
+        (millis() - buttonPressStart >= LONG_PRESS_MS)) {
+      handleLongPress();
+      longPressHandled = true;
+    }
   }
 }
 
