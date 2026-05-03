@@ -106,6 +106,7 @@ int curDD, curMO, curYY2;
 unsigned long lastBlink = 0;
 bool blinkOn = true;
 const unsigned long BLINK_INTERVAL = 400;
+int displayBrightness = 7;
 
 // Encoder
 volatile int8_t encDelta = 0;
@@ -178,6 +179,13 @@ void writeRTC() {
   rtc.adjust(DateTime(2000 + setYY2, setMO, setDD, setHH, setMM, setSS));
 }
 
+void applyBrightness() {
+  if (displayBrightness < 1) displayBrightness = 1;
+  if (displayBrightness > 7) displayBrightness = 7;
+  displayTime.setBrightness(displayBrightness);
+  displayDate.setBrightness(displayBrightness);
+}
+
 // -----------------------
 // ENCODER
 // -----------------------
@@ -199,6 +207,13 @@ void saveAndExitEditMode() {
   normalizeTime();
   normalizeDate();
   writeRTC();
+
+  // Evita il "flash" dei vecchi valori: allinea subito i valori correnti
+  // al nuovo set appena scritto nell'RTC.
+  curHH = setHH; curMM = setMM; curSS = setSS;
+  curDD = setDD; curMO = setMO; curYY2 = setYY2;
+  lastSecond = curSS;
+
   mode = MODE_RUN;
 }
 
@@ -264,9 +279,15 @@ void updateEncoder() {
 }
 
 void applyEncoderDelta() {
-  if (!encDelta || mode == MODE_RUN) return;
+  if (!encDelta) return;
   int d = encDelta;
   encDelta = 0;
+
+  if (mode == MODE_RUN) {
+    displayBrightness += d;
+    applyBrightness();
+    return;
+  }
 
   switch (mode) {
     case MODE_SET_HH: setHH += d; normalizeTime(); break;
@@ -338,8 +359,7 @@ void setup() {
   Wire.begin();
   displayTime.begin();
   displayDate.begin();
-  displayTime.setBrightness(7);
-  displayDate.setBrightness(7);
+  applyBrightness();
 
   rtc.begin();
 #if SET_RTC_FROM_COMPILE_TIME

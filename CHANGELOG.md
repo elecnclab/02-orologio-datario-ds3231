@@ -5,6 +5,11 @@ Tutte le modifiche rilevanti a questo progetto saranno documentate in questo fil
 Il formato segue, in modo semplificato, i principi di Keep a Changelog.
 Le versioni seguono Semantic Versioning: MAJOR.MINOR.PATCH.
 
+## [0.1.4] - 2026-05-03
+### Changed
+- Regolazione luminosita display in `RUN` tramite rotazione encoder, senza premere pulsanti (livelli 1..7).
+- Eliminato il "flash" dei vecchi valori all'uscita dall'ultimo campo di regolazione (secondi/anno): ora il display resta subito sul nuovo valore impostato.
+
 ## [0.1.3] - 2026-05-01
 ### Changed
 - Nuova logica di regolazione con pressione lunga/corta encoder:
